@@ -11,6 +11,7 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
+    <groupId>dev.drake.dough</groupId>
     <artifactId>dough-core</artifactId>
     <version>${dough.version}</version>
     <name>Dough Core (DrakesLab Port)</name>
@@ -84,3 +85,4 @@
     </build>
 
 </project>
+

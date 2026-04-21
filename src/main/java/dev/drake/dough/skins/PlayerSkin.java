@@ -25,6 +25,12 @@ import com.google.gson.JsonParser;
 
 import dev.drake.dough.common.DoughLogger;
 
+/**
+ * Represents a player skin.
+ * Refactored to remove MoJang AuthLib dependencies and use modern GSON.
+ * 
+ * @author DrakesCraft-Labs
+ */
 public class PlayerSkin {
 
     private static final String ERROR_TOKEN = "error";
@@ -44,14 +50,10 @@ public class PlayerSkin {
         return new PlayerSkin(uuid, base64skinTexture, url);
     }
 
-    /**
-     * @deprecated use {@link #fromBase64(UUID, String, URL)}
-     */
-    @Deprecated
     @ParametersAreNonnullByDefault
     public static @Nonnull PlayerSkin fromBase64(UUID uuid, String base64skinTexture) {
         String base64decode = new String(Base64.getDecoder().decode(base64skinTexture));
-        JsonObject jsonObject = new JsonParser().parse(base64decode).getAsJsonObject();
+        JsonObject jsonObject = JsonParser.parseString(base64decode).getAsJsonObject();
         String url = jsonObject.getAsJsonObject("textures").getAsJsonObject("SKIN").get("url").getAsString();
         URL skinUrl;
         try {
@@ -89,7 +91,7 @@ public class PlayerSkin {
 
     @ParametersAreNonnullByDefault
     public static @Nonnull PlayerSkin fromHashCode(UUID uuid, String hashCode) {
-        return fromURL(uuid, "http://textures.minecraft.net/texture/" + hashCode);
+        return fromURL(uuid, "https://textures.minecraft.net/texture/" + hashCode);
     }
 
     @ParametersAreNonnullByDefault
@@ -106,8 +108,8 @@ public class PlayerSkin {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             String targetUrl = "https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replace("-", "") + "?unsigned=false";
 
-            try (InputStreamReader reader = new InputStreamReader(new URL(targetUrl).openStream(), StandardCharsets.UTF_8)) {
-                JsonElement element = new JsonParser().parse(reader);
+            try (InputStreamReader reader = new InputStreamReader(URI.create(targetUrl).toURL().openStream(), StandardCharsets.UTF_8)) {
+                JsonElement element = JsonParser.parseReader(reader);
 
                 if (!(element instanceof JsonNull)) {
                     JsonObject obj = element.getAsJsonObject();

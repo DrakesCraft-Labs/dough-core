@@ -1,68 +1,89 @@
 package dev.drake.dough.items;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import javax.annotation.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
-import java.util.function.Consumer;
+/**
+ * A legacy-compatible CustomItemStack that extends {@link ItemStack}.
+ * This is used heavily in Slimefun and its addons.
+ * 
+ * @author TheBusyBiscuit
+ * @author DrakesCraft-Labs (1.21.1 Port)
+ */
+public class CustomItemStack extends ItemStack {
 
-@ParametersAreNonnullByDefault
-public final class CustomItemStack {
-
-    private CustomItemStack() {
-        throw new IllegalStateException("Cannot instantiate CustomItemStack");
+    public CustomItemStack(@Nonnull ItemStack item) {
+        super(item.getType(), item.getAmount());
+        this.setItemMeta(item.getItemMeta().clone());
     }
 
-    public static ItemStack create(ItemStack itemStack, Consumer<ItemMeta> metaConsumer) {
-        return new ItemStackEditor(itemStack).andMetaConsumer(metaConsumer).create();
+    @Override
+    public @Nonnull CustomItemStack clone() {
+        return new CustomItemStack(this);
     }
 
-    public static ItemStack create(Material material, Consumer<ItemMeta> metaConsumer) {
-        return new ItemStackEditor(material).andMetaConsumer(metaConsumer).create();
+    public CustomItemStack(@Nonnull Material type) {
+        super(type);
     }
 
-    public static ItemStack create(ItemStack item, @Nullable String name, String... lore) {
-        return new ItemStackEditor(item)
-                .setDisplayName(name)
-                .setLore(lore)
-                .create();
+    public CustomItemStack(@Nonnull ItemStack item, @Nonnull Consumer<ItemMeta> consumer) {
+        super(item.getType(), item.getAmount());
+        this.setItemMeta(item.getItemMeta().clone());
+        ItemMeta meta = getItemMeta();
+        if (meta != null) {
+            consumer.accept(meta);
+            setItemMeta(meta);
+        }
     }
 
-    public static ItemStack create(Material material, @Nullable String name, String... lore) {
-        return create(new ItemStack(material), name, lore);
+    public CustomItemStack(@Nonnull Material type, @Nonnull Consumer<ItemMeta> consumer) {
+        this(new ItemStack(type), consumer);
     }
 
-    public static ItemStack create(Material type, @Nullable String name, List<String> lore) {
-        return create(new ItemStack(type), name, lore.toArray(String[]::new));
+    public CustomItemStack(@Nonnull ItemStack item, @Nullable String name, @Nonnull String... lore) {
+        super(item.getType(), item.getAmount());
+        this.setItemMeta(item.getItemMeta().clone());
+        ItemMeta meta = getItemMeta();
+        if (meta != null) {
+            if (name != null) {
+                meta.setDisplayName(ChatColor.translateAlternateColorCodes('&', name));
+            }
+            if (lore.length > 0) {
+                List<String> lines = new ArrayList<>();
+                for (String line : lore) {
+                    lines.add(ChatColor.translateAlternateColorCodes('&', line));
+                }
+                meta.setLore(lines);
+            }
+            setItemMeta(meta);
+        }
     }
 
-
-    public static ItemStack create(ItemStack item, List<String> list) {
-        return create(new ItemStack(item), list.get(0), list.subList(1, list.size()).toArray(String[]::new));
+    public CustomItemStack(@Nonnull Material type, @Nullable String name, @Nonnull String... lore) {
+        this(new ItemStack(type), name, lore);
     }
 
-    public static ItemStack create(Material type, List<String> list) {
-        return create(new ItemStack(type), list);
+    public CustomItemStack(@Nonnull ItemStack item, @Nonnull List<String> list) {
+        this(item, list.isEmpty() ? null : list.get(0), list.isEmpty() ? new String[0] : list.subList(1, list.size()).toArray(new String[0]));
     }
 
-    public static ItemStack create(ItemStack item, int amount) {
-        return new ItemStackEditor(item).setAmount(amount).create();
+    public CustomItemStack(@Nonnull Material type, @Nonnull List<String> list) {
+        this(new ItemStack(type), list);
     }
 
-    /**
-     * Clones the item stack and sets its type
-     *
-     * @param itemStack The item
-     * @param type      The new type
-     * @return Returns the item with a new type
-     * @deprecated Setting the type via {@link ItemStack#setType(Material)} will not be supported soon.
-     */
-    @Deprecated(forRemoval = true)
-    public static ItemStack create(ItemStack itemStack, Material type) {
-        return new ItemStackEditor(itemStack).andStackConsumer(item -> item.setType(type)).create();
+    public CustomItemStack(@Nonnull ItemStack item, int amount) {
+        super(item.getType(), amount);
+        this.setItemMeta(item.getItemMeta().clone());
+        setAmount(amount);
     }
 
 }
