@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -21,21 +21,21 @@ import org.bukkit.inventory.meta.ItemMeta;
  */
 public class CustomItemStack extends ItemStack {
 
-    public CustomItemStack(@Nonnull ItemStack item) {
+    public CustomItemStack(@NotNull ItemStack item) {
         super(item.getType(), item.getAmount());
         this.setItemMeta(item.getItemMeta().clone());
     }
 
     @Override
-    public @Nonnull CustomItemStack clone() {
+    public @NotNull CustomItemStack clone() {
         return new CustomItemStack(this);
     }
 
-    public CustomItemStack(@Nonnull Material type) {
+    public CustomItemStack(@NotNull Material type) {
         super(type);
     }
 
-    public CustomItemStack(@Nonnull ItemStack item, @Nonnull Consumer<ItemMeta> consumer) {
+    public CustomItemStack(@NotNull ItemStack item, @NotNull Consumer<ItemMeta> consumer) {
         super(item.getType(), item.getAmount());
         this.setItemMeta(item.getItemMeta().clone());
         ItemMeta meta = getItemMeta();
@@ -45,11 +45,11 @@ public class CustomItemStack extends ItemStack {
         }
     }
 
-    public CustomItemStack(@Nonnull Material type, @Nonnull Consumer<ItemMeta> consumer) {
+    public CustomItemStack(@NotNull Material type, @NotNull Consumer<ItemMeta> consumer) {
         this(new ItemStack(type), consumer);
     }
 
-    public CustomItemStack(@Nonnull ItemStack item, @Nullable String name, @Nonnull String... lore) {
+    public CustomItemStack(@NotNull ItemStack item, @Nullable String name, @NotNull String... lore) {
         super(item.getType(), item.getAmount());
         this.setItemMeta(item.getItemMeta().clone());
         ItemMeta meta = getItemMeta();
@@ -68,22 +68,46 @@ public class CustomItemStack extends ItemStack {
         }
     }
 
-    public CustomItemStack(@Nonnull Material type, @Nullable String name, @Nonnull String... lore) {
+    public CustomItemStack(@NotNull Material type, @Nullable String name, @NotNull String... lore) {
         this(new ItemStack(type), name, lore);
     }
 
-    public CustomItemStack(@Nonnull ItemStack item, @Nonnull List<String> list) {
+    public CustomItemStack(@NotNull ItemStack item, @NotNull List<String> list) {
         this(item, list.isEmpty() ? null : list.get(0), list.isEmpty() ? new String[0] : list.subList(1, list.size()).toArray(new String[0]));
     }
 
-    public CustomItemStack(@Nonnull Material type, @Nonnull List<String> list) {
+    public CustomItemStack(@NotNull Material type, @NotNull List<String> list) {
         this(new ItemStack(type), list);
     }
 
-    public CustomItemStack(@Nonnull ItemStack item, int amount) {
+    public CustomItemStack(@NotNull Material type, @Nullable String name, @NotNull List<String> lore) {
+        this(new ItemStack(type), name, lore.toArray(new String[0]));
+    }
+
+    public CustomItemStack(@NotNull ItemStack item, int amount) {
         super(item.getType(), amount);
         this.setItemMeta(item.getItemMeta().clone());
         setAmount(amount);
+    }
+
+    @NotNull
+    public static CustomItemStack create(@NotNull Material type, @Nullable String name, @NotNull String... lore) {
+        return new CustomItemStack(type, name, lore);
+    }
+
+    @NotNull
+    public static CustomItemStack create(@NotNull Material type, @NotNull List<String> list) {
+        return new CustomItemStack(type, list);
+    }
+
+    @NotNull
+    public static CustomItemStack create(@NotNull Material type, @Nullable String name, @NotNull List<String> lore) {
+        return new CustomItemStack(type, name, lore);
+    }
+
+    @NotNull
+    public static CustomItemStack fromItemStack(@NotNull ItemStack item, @Nullable String name, @NotNull List<String> lore) {
+        return new CustomItemStack(item, name, lore.toArray(new String[0]));
     }
 
 }

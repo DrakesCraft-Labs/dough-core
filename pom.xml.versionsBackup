@@ -7,13 +7,13 @@
     <parent>
         <groupId>dev.drake</groupId>
         <artifactId>drakes-slimefun-labs</artifactId>
-        <version>6</version>
+        <version>1.0-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
     <groupId>dev.drake.dough</groupId>
     <artifactId>dough-core</artifactId>
-    <version>6</version>
+    <version>${dough.version}</version>
     <name>Dough Core (DrakesLab Port)</name>
 
     <dependencies>

@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryType;
@@ -221,6 +222,25 @@ public final class InvUtils {
         }
 
         return false;
+    }
+
+    /**
+     * This returns the first {@link ItemStack} in the given {@link Inventory}.
+     *
+     * @param inv
+     *            The {@link Inventory} to check
+     *
+     * @return The first {@link ItemStack} found, or null if none
+     */
+    @Nullable
+    public static ItemStack getFirstItem(@Nonnull Inventory inv) {
+        for (ItemStack item : inv.getContents()) {
+            if (item != null && item.getType() != Material.AIR) {
+                return item;
+            }
+        }
+
+        return null;
     }
 
 }
