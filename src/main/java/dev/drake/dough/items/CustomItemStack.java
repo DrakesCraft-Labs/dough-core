@@ -106,6 +106,11 @@ public class CustomItemStack extends ItemStack {
     }
 
     @NotNull
+    public static CustomItemStack create(@NotNull Material type, @NotNull Consumer<ItemMeta> consumer) {
+        return new CustomItemStack(type, consumer);
+    }
+
+    @NotNull
     public static CustomItemStack fromItemStack(@NotNull ItemStack item, @Nullable String name, @NotNull List<String> lore) {
         return new CustomItemStack(item, name, lore.toArray(new String[0]));
     }
