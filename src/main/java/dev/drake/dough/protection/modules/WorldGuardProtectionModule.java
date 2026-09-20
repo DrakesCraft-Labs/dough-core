@@ -79,6 +79,14 @@ public class WorldGuardProtectionModule implements ProtectionModule {
             case ATTACK_ENTITY:
                 return Flags.DAMAGE_ANIMALS;
             case INTERACT_BLOCK:
+                // Abrir una maquina de Slimefun es acceder a un contenedor, no "usar" un
+                // boton. Con USE, cualquier region que declare `use: allow` para que los
+                // visitantes pulsen botones deja tambien abiertas TODAS las maquinas a
+                // cualquiera (reporte de Angelic, 2026-09-20: Quantum Storage y el resto
+                // se abrian y vaciaban sin permisos en bases ajenas). CHEST_ACCESS es la
+                // semantica que ya protege los cofres vanilla: solo miembros salvo que la
+                // region lo permita expresamente.
+                return Flags.CHEST_ACCESS;
             case INTERACT_ENTITY:
                 return Flags.USE;
             case BREAK_BLOCK:
